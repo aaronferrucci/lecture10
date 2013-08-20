@@ -5,6 +5,9 @@ var chance = require('./chance');
 
 var bu = require('./board_utils');
 var squares = bu.squares;
+var _s = require('underscore.string');
+
+var t_CARDS = require('./t_cards');
 
 var log = console.log;
 
@@ -32,6 +35,59 @@ var visits = function(s) {
   return visit_counts[s];
 }
 
+var next_r = function(current) {
+  var next;
+  if (current < 5) {
+   next = 5;
+  } else if (current < 15) {
+   next = 15;
+  } else if (current < 25) {
+    next = 25;
+  } else if (current < 35) {
+    next = 35;
+  } else {
+    next = 5;
+  }
+    
+  return next;
+}
+
+var next_u = function(current) {
+  var next;
+  if (current < 12) {
+    next = 12;
+  } else if (current < 28) {
+    next = 28;
+  } else {
+    next = 12;
+  }
+  return next;
+}
+
+var card_update = function(card, current) {
+  switch (card) {
+    case t_CARDS.NORMAL:
+      return current;
+    case t_CARDS.GOTO_GO:
+    case t_CARDS.GOTO_JAIL:
+    case t_CARDS.GOTO_C1:
+    case t_CARDS.GOTO_E3:
+    case t_CARDS.GOTO_H2:
+    case t_CARDS.GOTO_R1:
+      return card;
+    case t_CARDS.GOTO_NEXTR:
+      return next_r(current);
+    case t_CARDS.GOTO_NEXTU:
+      return next_u(current);
+    case t_CARDS.GO_BACK3:
+      return current - 3;
+
+    default:
+      console.assert(false, "Error, unknown card: " + card);
+      break;
+  }
+}
+
 var update = function(current, roll) {
   current += roll;
   current %= squares.length;
@@ -40,18 +96,12 @@ var update = function(current, roll) {
   // But wait!  Did we land on a special square?
   if (current_name == 'G2J') {
     current = bu.name2index('JAIL');
-  } else if (current_name == 'CH1') {
-    // log("landed on " + current_name + "; ignoring for now.");
-  } else if (current_name == 'CH2') {
-    // log("landed on " + current_name + "; ignoring for now.");
-  } else if (current_name == 'CH3') {
-    // log("landed on " + current_name + "; ignoring for now.");
-  } else if (current_name == 'CC1') {
-    // log("landed on " + current_name + "; ignoring for now.");
-  } else if (current_name == 'CC2') {
-    // log("landed on " + current_name + "; ignoring for now.");
-  } else if (current_name == 'CC3') {
-    // log("landed on " + current_name + "; ignoring for now.");
+  } else if (_s.startsWith(current_name, 'CH')) {
+    var card = chance.card();
+    current = card_update(card, current);
+  } else if (_s.startsWith(current_name, 'CC')) {
+    var card = community_chest.card();
+    current = card_update(card, current);
   }
   return current;
 }

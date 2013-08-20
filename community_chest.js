@@ -23,12 +23,12 @@ var cards = [
   ];
 
 var card_index = 0;
-var cc_action = function() {
-  var action = cards[card_index];
+var card = function() {
+  var next_card = cards[card_index];
   card_index++;
   card_index %= cards.length;
 
-  return action;
+  return next_card;
 }
 
 var shuffle = function() {
@@ -72,5 +72,5 @@ if(require.main == module) {
 } else {
   shuffle();
 }
-exports.cc_action = cc_action;
+exports.card = card;
 

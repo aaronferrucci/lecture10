@@ -4,7 +4,10 @@ var die = function() {
 }
 
 var throw_dice = function() {
-  return die() + die();
+  var d1 = die();
+  var d2 = die();
+  var doubles = d1 == d2;
+  return {value: d1 + d2, doubles: doubles};
 }
 
 if(require.main == module) {
