@@ -2,6 +2,7 @@
 
 var bu = require('./board_utils');
 var t_CARDS = require('./t_cards');
+var r = require('./rand.js');
 
 var cards = [
     t_CARDS.GOTO_GO,
@@ -29,6 +30,11 @@ var card = function() {
   card_index %= cards.length;
 
   return next_card;
+}
+
+var card2 = function() {
+  var card_index = r.die(cards.length) - 1;
+  return cards[card_index];
 }
 
 var shuffle = function() {
@@ -85,5 +91,5 @@ if(require.main == module) {
 } else {
   shuffle();
 }
-exports.card = card;
+exports.card = card2;
 

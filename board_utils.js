@@ -41,15 +41,21 @@ var squares = [
   "H2",
 ];
 
+var n2i_cache = undefined;
 var name2index = function(name) {
 
-  for (var i = 0; i < squares.length; i++) {
-    if (squares[i] == name) {
-      return i;
+  if (n2i_cache === undefined) {
+    n2i_cache = {};
+    for (var i = 0; i < squares.length; i++) {
+      n2i_cache[squares[i]] = i;
     }
   }
-    
-  console.assert(false, "Error, " + name + " is not a square name.");
+
+  var index = n2i_cache[name];
+  // var index = squares.indexOf(name);
+  // console.assert(index != -1, "Error, didn't find name " + name + " in cache.");
+  console.assert(index != undefined, "Error, didn't find name " + name + " in cache.");
+  return index;
 }
 
 var index2name = function(index) {
